@@ -106,6 +106,7 @@ class OrderBase(BaseModel):
     status: OrderStatus = OrderStatus.NEW
     comment: Optional[str] = None
     delivery_address: Optional[str] = None
+    project_name: Optional[str] = None
 
 
 class OrderCreate(OrderBase):
@@ -119,6 +120,7 @@ class OrderUpdate(BaseModel):
     status: Optional[OrderStatus] = None
     comment: Optional[str] = None
     delivery_address: Optional[str] = None
+    project_name: Optional[str] = None
 
 
 class OrderRead(OrderBase):

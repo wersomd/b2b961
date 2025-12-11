@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { OrderItem, Product, StockStatus, User } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { OrderItem, Product, User } from '../../types';
 import { db } from '../../services/mockDatabase';
 import { Plus, Trash2, Calendar, MapPin, Search } from 'lucide-react';
 
@@ -13,6 +13,7 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
   const [deliveryDate, setDeliveryDate] = useState('');
   const [address, setAddress] = useState('');
   const [comment, setComment] = useState('');
+  const [project, setProject] = useState('Kerege Business');
   
   const [items, setItems] = useState<Partial<OrderItem>[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,7 +21,6 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
   // Autocomplete state
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeRowIndex, setActiveRowIndex] = useState<number | null>(null);
 
   useEffect(() => {
     db.getProducts().then(setProducts);
@@ -30,14 +30,12 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
     const newItem: Partial<OrderItem> = {
       id: `temp_${Date.now()}`,
       quantity: 1,
-      stockStatus: StockStatus.UNKNOWN,
       productId: product?.id || null,
       productName: product?.name || '',
     };
     setItems([...items, newItem]);
     setSearchTerm('');
     setShowSuggestions(false);
-    setActiveRowIndex(items.length); // Focus next
   };
 
   const handleCreateNewProduct = async (name: string) => {
@@ -68,6 +66,7 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
       title,
       deliveryDate,
       deliveryAddress: address,
+      projectName: project,
       comment,
       items: items as OrderItem[]
     }, user);
@@ -86,7 +85,7 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header Info */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Order Title</label>
             <input 
@@ -116,9 +115,9 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
             <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
               <MapPin size={16}/> Address
             </label>
-            <input 
+            <input
               required
-              type="text" 
+              type="text"
               value={address}
               onChange={e => setAddress(e.target.value)}
               placeholder="Site Address"
@@ -126,9 +125,29 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Project</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {['Kerege Business', 'Kerege City', 'Symbat'].map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setProject(option)}
+                  className={`p-3 rounded-lg border text-sm font-semibold transition-all ${
+                    project === option
+                      ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
+                      : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-blue-200'
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
-            <textarea 
+            <textarea
               rows={2}
               value={comment}
               onChange={e => setComment(e.target.value)}
@@ -138,7 +157,7 @@ const NewOrder: React.FC<Props> = ({ user, onSuccess }) => {
         </div>
 
         {/* Items */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
           <h3 className="text-lg font-semibold mb-4">Items</h3>
           
           {/* Add Item Bar */}

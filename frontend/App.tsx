@@ -30,16 +30,30 @@ const App: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    db.restoreSession().then((restored) => {
+      if (restored) {
+        setUser(restored);
+        setCurrentPage((prev) => prev || getDefaultPage(restored));
+      }
+    });
+  }, []);
+
+  const getDefaultPage = (loggedUser: User) => {
+    if (loggedUser.role === Role.CLIENT) return 'client_dashboard';
+    if (loggedUser.role === Role.SELLER) return 'seller_dashboard';
+    if (loggedUser.role === Role.DRIVER) return 'driver_dashboard';
+    if (loggedUser.role === Role.ADMIN) return 'admin_users';
+    return '';
+  };
+
   const handleLogin = (loggedUser: User) => {
       setUser(loggedUser);
-      // Set default page based on role
-      if (loggedUser.role === Role.CLIENT) setCurrentPage('client_dashboard');
-      if (loggedUser.role === Role.SELLER) setCurrentPage('seller_dashboard');
-      if (loggedUser.role === Role.DRIVER) setCurrentPage('driver_dashboard');
-      if (loggedUser.role === Role.ADMIN) setCurrentPage('admin_users');
+      setCurrentPage(getDefaultPage(loggedUser));
   };
 
   const handleLogout = () => {
+    db.logout();
     setUser(null);
     setCurrentPage('');
     setSelectedOrderId(null);

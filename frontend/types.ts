@@ -16,12 +16,6 @@ export enum OrderStatus {
   CANCELLED = 'CANCELLED'
 }
 
-export enum StockStatus {
-  UNKNOWN = 'UNKNOWN',
-  IN_STOCK = 'IN_STOCK',
-  NEED_TO_PURCHASE = 'NEED_TO_PURCHASE'
-}
-
 export interface User {
   id: string;
   name: string;
@@ -43,7 +37,6 @@ export interface OrderItem {
   productId: string | null;
   productName: string;
   quantity: number;
-  stockStatus: StockStatus;
   sellerComment?: string;
 }
 
@@ -54,6 +47,7 @@ export interface Order {
   deliveryDate: string; // ISO Date
   createdBy: string; // User ID
   createdByName: string;
+  projectName?: string;
   status: OrderStatus;
   comment: string;
   deliveryAddress: string;
