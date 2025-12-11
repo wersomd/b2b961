@@ -30,11 +30,11 @@ const SellerDashboard: React.FC<Props> = ({ onViewOrder }) => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-blue-100 dark:border-slate-800">
             <p className="text-gray-500 text-sm">New Requests</p>
             <p className="text-2xl font-bold text-blue-600">{stats.new}</p>
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-purple-100">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-purple-100 dark:border-slate-800">
             <p className="text-gray-500 text-sm">Processing</p>
             <p className="text-2xl font-bold text-purple-600">{stats.active}</p>
         </div>
@@ -59,7 +59,7 @@ const SellerDashboard: React.FC<Props> = ({ onViewOrder }) => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-gray-50 text-gray-600 text-sm">
@@ -83,6 +83,9 @@ const SellerDashboard: React.FC<Props> = ({ onViewOrder }) => {
                   </td>
                   <td className="p-4">
                     <p className="text-sm text-gray-900">{order.title}</p>
+                    {order.projectName && (
+                      <p className="text-xs text-blue-700 font-semibold">{order.projectName}</p>
+                    )}
                     {order.comment && (
                       <span className="flex items-center gap-1 text-xs text-orange-600 mt-1">
                         <AlertCircle size={10} /> Comment

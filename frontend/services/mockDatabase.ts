@@ -4,7 +4,6 @@ import {
   OrderStatus,
   Product,
   Role,
-  StockStatus,
   User,
 } from '../types';
 
@@ -53,7 +52,6 @@ class ApiClient {
       productId: api.product_id != null ? String(api.product_id) : null,
       productName: api.product_name,
       quantity: api.quantity,
-      stockStatus: api.stock_status as StockStatus,
       sellerComment: api.seller_comment ?? undefined,
     };
   }
@@ -66,11 +64,62 @@ class ApiClient {
       deliveryDate: api.delivery_date ?? '',
       createdBy: String(api.created_by_id),
       createdByName: 'Client',
+      projectName: api.project_name ?? '',
       status: api.status as OrderStatus,
       comment: api.comment ?? '',
       deliveryAddress: api.delivery_address ?? '',
       items: (api.items ?? []).map((it: any) => this.mapOrderItem(it)),
     };
+  }
+
+  private persistSession(token: string, user: User) {
+    this.token = token;
+    this.currentUser = user;
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_user', JSON.stringify(user));
+  }
+
+  setToken(token: string | null) {
+    this.token = token;
+    if (!token) {
+      localStorage.removeItem('auth_token');
+    }
+  }
+
+  logout() {
+    this.token = null;
+    this.currentUser = null;
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+  }
+
+  async restoreSession(): Promise<User | null> {
+    const storedToken = localStorage.getItem('auth_token');
+    if (!storedToken) return null;
+
+    this.token = storedToken;
+
+    try {
+      const user = await this.getCurrentUser();
+      this.currentUser = user;
+      localStorage.setItem('auth_user', JSON.stringify(user));
+      return user;
+    } catch (err) {
+      this.logout();
+      return null;
+    }
+  }
+
+  async getCurrentUser(): Promise<User> {
+    const res = await fetch(`${API_URL}/auth/me`, {
+      headers: {
+        'Accept': 'application/json',
+        ...this.authHeaders,
+      },
+    });
+
+    const data = await this.handleResponse<any>(res);
+    return this.mapUser(data);
   }
 
   // ---------- Auth ----------
@@ -89,9 +138,8 @@ class ApiClient {
     });
 
     const data = await this.handleResponse<any>(res);
-    this.token = data.access_token;
     const user = this.mapUser(data.user);
-    this.currentUser = user;
+    this.persistSession(data.access_token, user);
     return user;
   }
 
@@ -245,7 +293,6 @@ class ApiClient {
       product_id: item.productId ? Number(item.productId) : null,
       product_name: item.productName,
       quantity: item.quantity,
-      stock_status: item.stockStatus || StockStatus.UNKNOWN,
       seller_comment: item.sellerComment || null,
     }));
 
@@ -253,6 +300,7 @@ class ApiClient {
       title: orderData.title || 'New order',
       request_date: today,
       delivery_date: deliveryDate,
+      project_name: orderData.projectName || '',
       status: OrderStatus.NEW,
       comment: orderData.comment || '',
       delivery_address: orderData.deliveryAddress || '',
@@ -289,7 +337,6 @@ class ApiClient {
         const itemPayload: any = {};
         if (item.productName !== undefined) itemPayload.product_name = item.productName;
         if (item.quantity !== undefined) itemPayload.quantity = item.quantity;
-        if (item.stockStatus !== undefined) itemPayload.stock_status = item.stockStatus;
         if (item.sellerComment !== undefined) itemPayload.seller_comment = item.sellerComment;
 
         await fetch(`${API_URL}/orders/${orderId}/items/${item.id}`, {
