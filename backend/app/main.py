@@ -76,6 +76,11 @@ def login(
     access_token = create_access_token(subject=user.id)
     return LoginResponse(access_token=access_token, token_type="bearer", user=user)
 
+
+@app.get("/auth/me", response_model=UserRead)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
+
 # ---------- USERS (ADMIN) ----------
 
 @app.get("/users", response_model=List[UserRead])
@@ -337,6 +342,7 @@ def create_order(
         status=OrderStatus.NEW,
         comment=order_in.comment,
         delivery_address=order_in.delivery_address,
+        project_name=order_in.project_name,
         created_by_id=current_user.id,
         created_by_role=current_user.role,
     )

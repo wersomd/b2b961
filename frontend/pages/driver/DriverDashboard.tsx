@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Order, OrderStatus, StockStatus, User } from '../../types';
+import { Order, OrderStatus, User } from '../../types';
 import { db } from '../../services/mockDatabase';
-import { MapPin, Box, ArrowRight, CheckCircle, Navigation } from 'lucide-react';
+import { MapPin, ArrowRight, CheckCircle, Navigation } from 'lucide-react';
 import { OrderStatusBadge } from '../../components/StatusBadge';
 
 interface Props {
@@ -42,7 +42,7 @@ const DriverDashboard: React.FC<Props> = ({ user }) => {
         </div>
       ) : (
         orders.map(order => (
-            <div key={order.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+            <div key={order.id} className="bg-white dark:bg-slate-900 rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-slate-800">
                 {/* Header */}
                 <div className="bg-gray-50 p-4 border-b flex justify-between items-start">
                     <div>
@@ -65,13 +65,11 @@ const DriverDashboard: React.FC<Props> = ({ user }) => {
                                     <span className="font-bold text-gray-800">{item.quantity} x {item.productName}</span>
                                     {item.sellerComment && <p className="text-xs text-orange-600 mt-1">Note: {item.sellerComment}</p>}
                                 </div>
-                                <div className={`text-xs font-bold px-3 py-1 rounded uppercase ${
-                                    item.stockStatus === StockStatus.IN_STOCK 
-                                    ? 'bg-blue-100 text-blue-700' 
-                                    : 'bg-purple-100 text-purple-700'
-                                }`}>
-                                    {item.stockStatus === StockStatus.IN_STOCK ? 'Warehouse' : 'Supplier'}
-                                </div>
+                                {item.sellerComment && (
+                                  <div className="text-xs font-medium px-3 py-1 rounded bg-yellow-50 text-yellow-800">
+                                    {item.sellerComment}
+                                  </div>
+                                )}
                             </div>
                         ))}
                     </div>

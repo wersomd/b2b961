@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Order, OrderItem, OrderStatus, StockStatus } from '../../types';
+import { Order, OrderItem, OrderStatus } from '../../types';
 import { db } from '../../services/mockDatabase';
-import { OrderStatusBadge, StockStatusBadge } from '../../components/StatusBadge';
-import { ArrowLeft, Save, Truck, CheckCircle } from 'lucide-react';
+import { OrderStatusBadge } from '../../components/StatusBadge';
+import { ArrowLeft, Save } from 'lucide-react';
 
 interface Props {
   orderId: string;
@@ -53,7 +53,7 @@ const OrderDetails: React.FC<Props> = ({ orderId, onBack }) => {
       </button>
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6 gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
             {order.title}
@@ -63,6 +63,9 @@ const OrderDetails: React.FC<Props> = ({ orderId, onBack }) => {
             Created by {order.createdByName} on {new Date(order.requestDate).toLocaleDateString()}
           </p>
           <p className="text-sm text-gray-500 mt-1">Delivery: {order.deliveryAddress} ({new Date(order.deliveryDate).toLocaleDateString()})</p>
+          {order.projectName && (
+            <p className="text-sm text-blue-700 font-semibold mt-2">Project: {order.projectName}</p>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -87,39 +90,30 @@ const OrderDetails: React.FC<Props> = ({ orderId, onBack }) => {
       </div>
 
       {/* Items Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
         <table className="w-full text-left">
             <thead className="bg-gray-50 text-gray-600 border-b">
                 <tr>
                     <th className="p-4 w-1/3">Product</th>
                     <th className="p-4 w-24">Qty</th>
-                    <th className="p-4 w-40">Stock Status</th>
                     <th className="p-4">Seller Comment</th>
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
                 {order.items.map(item => (
                     <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="p-4 font-medium text-gray-900">{item.productName}</td>
+                        <td className="p-4">
+                            <input
+                              type="text"
+                              value={item.productName}
+                              onChange={(e) => handleItemChange(item.id, 'productName', e.target.value)}
+                              className="w-full p-2 border rounded-md font-medium text-gray-900"
+                            />
+                        </td>
                         <td className="p-4 text-gray-600">{item.quantity}</td>
                         <td className="p-4">
-                            <select
-                                value={item.stockStatus}
-                                onChange={(e) => handleItemChange(item.id, 'stockStatus', e.target.value)}
-                                className={`w-full p-2 rounded border text-sm font-medium ${
-                                    item.stockStatus === StockStatus.IN_STOCK ? 'bg-green-50 border-green-200 text-green-800' :
-                                    item.stockStatus === StockStatus.NEED_TO_PURCHASE ? 'bg-red-50 border-red-200 text-red-800' :
-                                    'bg-gray-50 text-gray-600'
-                                }`}
-                            >
-                                <option value={StockStatus.UNKNOWN}>Unknown</option>
-                                <option value={StockStatus.IN_STOCK}>In Stock</option>
-                                <option value={StockStatus.NEED_TO_PURCHASE}>Need Purchase</option>
-                            </select>
-                        </td>
-                        <td className="p-4">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 value={item.sellerComment || ''}
                                 onChange={(e) => handleItemChange(item.id, 'sellerComment', e.target.value)}
                                 placeholder="Add note (e.g. from Supplier X)"

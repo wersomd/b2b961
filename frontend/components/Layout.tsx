@@ -64,19 +64,19 @@ const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, currentPage, 
   );
 
   return (
-    <div className={`flex h-screen font-sans ${isDark ? 'dark' : ''}`}>
+    <div className={`flex h-screen font-sans ${isDark ? 'dark bg-slate-950' : 'bg-slate-50'}`}>
       {/* Sidebar */}
-      <aside className="w-72 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col hidden md:flex z-20 transition-colors duration-200">
-        <div className="p-6 border-b border-gray-100 dark:border-slate-800 bg-slate-900">
+      <aside className="w-72 bg-white/80 dark:bg-slate-950/80 backdrop-blur border-r border-gray-200 dark:border-slate-800 flex flex-col hidden md:flex z-20 transition-colors duration-200">
+        <div className="p-6 border-b border-gray-100 dark:border-slate-800 bg-slate-900/90">
           <Logo />
-          
-          <div className="mt-6 p-3 bg-slate-800/80 rounded-lg border border-slate-700/50">
+
+          <div className="mt-6 p-3 bg-slate-800/80 rounded-lg border border-slate-700/50 shadow-inner">
             <p className="text-sm font-medium text-white">{user.name}</p>
-            <p className="text-xs text-brand-400 mt-0.5 font-bold uppercase tracking-wider">{translations[lang][`role${user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()}` as keyof typeof t] || user.role}</p>
+            <p className="text-xs text-brand-300 mt-0.5 font-bold uppercase tracking-wider">{translations[lang][`role${user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()}` as keyof typeof t] || user.role}</p>
           </div>
         </div>
-        
-        <nav className="flex-1 p-4 space-y-1 bg-white dark:bg-slate-900">
+
+        <nav className="flex-1 p-4 space-y-1 bg-white/60 dark:bg-slate-950/60">
           {getMenuItems().map((item) => (
             <button
               key={item.id}
@@ -93,7 +93,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, currentPage, 
           ))}
         </nav>
 
-        <div className="p-4 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 space-y-3">
+        <div className="p-4 border-t border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/60 space-y-3 backdrop-blur">
           <div className="flex gap-2">
               {/* Language Switcher */}
               <div className="flex bg-white dark:bg-slate-800 rounded-lg p-1 border border-gray-200 dark:border-slate-700 flex-1">
@@ -148,7 +148,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, currentPage, 
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto md:p-8 p-4 pt-20 md:pt-8 bg-gray-50 dark:bg-slate-950 transition-colors duration-200">
+      <main className="flex-1 overflow-auto md:p-8 p-4 pt-20 md:pt-8 bg-gray-50 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
         {children}
       </main>
     </div>

@@ -28,7 +28,7 @@ const MyOrders: React.FC<Props> = ({ user, onViewOrder }) => {
         <h2 className="text-2xl font-bold text-gray-800">My Orders</h2>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
         {orders.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             No orders found. Create your first order!
@@ -50,6 +50,9 @@ const MyOrders: React.FC<Props> = ({ user, onViewOrder }) => {
                     <td className="p-4">
                       <p className="font-semibold text-gray-900">{order.title}</p>
                       <p className="text-xs text-gray-500 mt-1">ID: {order.id.toUpperCase()}</p>
+                      {order.projectName && (
+                        <p className="text-xs text-blue-700 font-semibold mt-1">{order.projectName}</p>
+                      )}
                       <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
                         <Calendar size={14} />
                         {new Date(order.requestDate).toLocaleDateString()}

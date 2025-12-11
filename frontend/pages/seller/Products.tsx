@@ -75,7 +75,7 @@ const Products: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
         <div className="relative mb-4">
             <Search className="absolute left-3 top-3 text-gray-400" size={18}/>
             <input 
@@ -87,9 +87,9 @@ const Products: React.FC = () => {
             />
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-gray-200">
+        <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-800">
             <table className="w-full text-left">
-                <thead className="bg-gray-50 text-gray-600 text-sm">
+                <thead className="bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-slate-300 text-sm">
                     <tr>
                         <th className="p-3">Name</th>
                         <th className="p-3">Unit</th>

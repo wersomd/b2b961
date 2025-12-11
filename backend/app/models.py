@@ -75,6 +75,7 @@ class Order(Base):
     )
     comment = Column(Text, nullable=True)
     delivery_address = Column(Text, nullable=True)
+    project_name = Column(String, nullable=True)
 
     created_by_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_by_role = Column(Enum(UserRole, name="creator_role"), nullable=True)
