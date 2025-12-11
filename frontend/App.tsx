@@ -3,6 +3,7 @@ import { Role, User } from './types';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 import { Language } from './i18n';
+import { db } from './services/mockDatabase';
 
 // Client Pages
 import MyOrders from './pages/client/MyOrders';
